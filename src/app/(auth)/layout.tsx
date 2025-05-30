@@ -11,11 +11,11 @@ export default function AuthLayout({
             <h1 className="text-xl font-semibold flex items-center gap-3">
               <Think />
 
-              <span>Chat Bot</span>
+              <span>SLYYYDE AI</span>
             </h1>
             <div className="flex-1" />
             <p className=" mb-4 text-muted-foreground">
-              Welcome to MCP Chat Bot. Sign in to experience our
+              Welcome to slyyyde AI Chat Bot. Sign in to experience our
               <span className="text-foreground ml-1">
                 AI-powered conversational tools.
               </span>
