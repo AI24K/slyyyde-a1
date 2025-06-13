@@ -26,6 +26,8 @@ import { insertMcpClientAction } from "@/app/api/mcp/actions";
 
 import { Alert, AlertDescription, AlertTitle } from "ui/alert";
 import { z } from "zod";
+import { MCPPresetSelector } from "./mcp-preset-selector";
+import { Separator } from "./ui/separator";
 
 interface MCPEditorProps {
   initialConfig?: MCPServerConfig;
@@ -34,7 +36,7 @@ interface MCPEditorProps {
 
 const STDIO_ARGS_ENV_PLACEHOLDER = `/** STDIO Example */
 {
-  "command": "node", 
+  "command": "node",
   "args": ["index.js"],
   "env": {
     "OPENAI_API_KEY": "sk-...",
