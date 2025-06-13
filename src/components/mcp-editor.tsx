@@ -160,8 +160,27 @@ export default function MCPEditor({
     }
   };
 
+  const handlePresetSelect = (
+    presetName: string,
+    presetConfig: MCPServerConfig,
+  ) => {
+    setName(presetName);
+    setConfig(presetConfig);
+    setJsonString(JSON.stringify(presetConfig, null, 2));
+    setJsonError(null);
+    setNameError(null);
+  };
+
   return (
     <div className="flex flex-col space-y-6">
+      {/* Preset Selector - only show when creating new */}
+      {shouldInsert && (
+        <>
+          <MCPPresetSelector onSelectPreset={handlePresetSelect} />
+          <Separator />
+        </>
+      )}
+
       {/* Name field */}
       <div className="space-y-2">
         <Label htmlFor="name">Name</Label>
