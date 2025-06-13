@@ -1,7 +1,9 @@
 import MCPEditor from "@/components/mcp-editor";
 import { ComposioIntegrationsShowcase } from "@/components/composio-integrations";
+import { ComposioUsageGuide } from "@/components/composio-usage-guide";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Page() {
   return (
