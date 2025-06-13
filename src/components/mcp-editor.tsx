@@ -263,6 +263,28 @@ export default function MCPEditor({
         />
         {nameError && <p className="text-xs text-destructive">{nameError}</p>}
       </div>
+
+      {/* API Key Helper */}
+      {selectedPreset && selectedPreset.requiresApiKey && (
+        <ApiKeyHelper
+          service={selectedPreset.displayName}
+          placeholder={selectedPreset.apiKeyPlaceholder || "Enter API key..."}
+          signupUrl={
+            selectedPreset.name === "composio"
+              ? "https://app.composio.dev"
+              : selectedPreset.name === "github-mcp"
+                ? "https://github.com/settings/tokens"
+                : selectedPreset.name === "brave-search"
+                  ? "https://api.search.brave.com/"
+                  : selectedPreset.name === "slack-mcp"
+                    ? "https://api.slack.com/apps"
+                    : undefined
+          }
+          onApiKeyChange={handleApiKeyChange}
+          instructions={selectedPreset.setupInstructions}
+        />
+      )}
+
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="config">Config</Label>
