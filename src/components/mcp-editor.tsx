@@ -61,6 +61,9 @@ export default function MCPEditor({
   const [isLoading, setIsLoading] = useState(false);
   const [jsonError, setJsonError] = useState<string | null>(null);
   const [nameError, setNameError] = useState<string | null>(null);
+  const [selectedPresetName, setSelectedPresetName] = useState<string | null>(
+    null,
+  );
 
   const errorDebounce = useMemo(() => createDebounce(), []);
 
