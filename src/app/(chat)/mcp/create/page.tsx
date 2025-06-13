@@ -1,6 +1,9 @@
 import MCPEditor from "@/components/mcp-editor";
+import { ComposioIntegrationsShowcase } from "@/components/composio-integrations";
+import { ComposioUsageGuide } from "@/components/composio-usage-guide";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Page() {
   return (
@@ -21,7 +24,27 @@ export default function Page() {
         </header>
 
         <main className="my-8">
-          <MCPEditor />
+          <Tabs defaultValue="configure" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="configure">Configure Server</TabsTrigger>
+              <TabsTrigger value="integrations">
+                Available Integrations
+              </TabsTrigger>
+              <TabsTrigger value="guide">Usage Guide</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="configure" className="mt-6">
+              <MCPEditor />
+            </TabsContent>
+
+            <TabsContent value="integrations" className="mt-6">
+              <ComposioIntegrationsShowcase />
+            </TabsContent>
+
+            <TabsContent value="guide" className="mt-6">
+              <ComposioUsageGuide />
+            </TabsContent>
+          </Tabs>
         </main>
       </div>
     </div>

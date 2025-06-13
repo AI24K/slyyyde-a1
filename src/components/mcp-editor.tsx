@@ -26,6 +26,10 @@ import { insertMcpClientAction } from "@/app/api/mcp/actions";
 
 import { Alert, AlertDescription, AlertTitle } from "ui/alert";
 import { z } from "zod";
+import { MCPPresetSelector } from "./mcp-preset-selector";
+import { ApiKeyHelper } from "./api-key-helper";
+import { Separator } from "./ui/separator";
+import { getMCPPresetByName } from "@/lib/mcp-presets";
 
 interface MCPEditorProps {
   initialConfig?: MCPServerConfig;
@@ -34,7 +38,7 @@ interface MCPEditorProps {
 
 const STDIO_ARGS_ENV_PLACEHOLDER = `/** STDIO Example */
 {
-  "command": "node", 
+  "command": "node",
   "args": ["index.js"],
   "env": {
     "OPENAI_API_KEY": "sk-...",
@@ -57,6 +61,9 @@ export default function MCPEditor({
   const [isLoading, setIsLoading] = useState(false);
   const [jsonError, setJsonError] = useState<string | null>(null);
   const [nameError, setNameError] = useState<string | null>(null);
+  const [selectedPresetName, setSelectedPresetName] = useState<string | null>(
+    null,
+  );
 
   const errorDebounce = useMemo(() => createDebounce(), []);
 
@@ -158,8 +165,87 @@ export default function MCPEditor({
     }
   };
 
+  const handlePresetSelect = (
+    presetName: string,
+    presetConfig: MCPServerConfig,
+  ) => {
+    setName(presetName);
+    setConfig(presetConfig);
+    setJsonString(JSON.stringify(presetConfig, null, 2));
+    setJsonError(null);
+    setNameError(null);
+    setSelectedPresetName(presetName);
+  };
+
+  const handleApiKeyChange = (apiKey: string) => {
+    if (!selectedPresetName) return;
+
+    const preset = getMCPPresetByName(selectedPresetName);
+    if (!preset || !preset.requiresApiKey) return;
+
+    // Update the config with the new API key
+    let updatedConfig = { ...config };
+
+    if (selectedPresetName === "composio") {
+      updatedConfig = {
+        ...updatedConfig,
+        env: {
+          ...updatedConfig.env,
+          COMPOSIO_API_KEY: apiKey,
+        },
+      };
+    } else if (selectedPresetName === "composio-sse") {
+      updatedConfig = {
+        ...updatedConfig,
+        headers: {
+          ...updatedConfig.headers,
+          "X-API-Key": apiKey,
+        },
+      };
+    } else if (selectedPresetName === "github-mcp") {
+      updatedConfig = {
+        ...updatedConfig,
+        env: {
+          ...updatedConfig.env,
+          GITHUB_PERSONAL_ACCESS_TOKEN: apiKey,
+        },
+      };
+    } else if (selectedPresetName === "brave-search") {
+      updatedConfig = {
+        ...updatedConfig,
+        env: {
+          ...updatedConfig.env,
+          BRAVE_API_KEY: apiKey,
+        },
+      };
+    } else if (selectedPresetName === "slack-mcp") {
+      updatedConfig = {
+        ...updatedConfig,
+        env: {
+          ...updatedConfig.env,
+          SLACK_BOT_TOKEN: apiKey,
+        },
+      };
+    }
+
+    setConfig(updatedConfig);
+    setJsonString(JSON.stringify(updatedConfig, null, 2));
+  };
+
+  const selectedPreset = selectedPresetName
+    ? getMCPPresetByName(selectedPresetName)
+    : null;
+
   return (
     <div className="flex flex-col space-y-6">
+      {/* Preset Selector - only show when creating new */}
+      {shouldInsert && (
+        <>
+          <MCPPresetSelector onSelectPreset={handlePresetSelect} />
+          <Separator />
+        </>
+      )}
+
       {/* Name field */}
       <div className="space-y-2">
         <Label htmlFor="name">Name</Label>
@@ -177,6 +263,28 @@ export default function MCPEditor({
         />
         {nameError && <p className="text-xs text-destructive">{nameError}</p>}
       </div>
+
+      {/* API Key Helper */}
+      {selectedPreset && selectedPreset.requiresApiKey && (
+        <ApiKeyHelper
+          service={selectedPreset.displayName}
+          placeholder={selectedPreset.apiKeyPlaceholder || "Enter API key..."}
+          signupUrl={
+            selectedPreset.name === "composio"
+              ? "https://app.composio.dev"
+              : selectedPreset.name === "github-mcp"
+                ? "https://github.com/settings/tokens"
+                : selectedPreset.name === "brave-search"
+                  ? "https://api.search.brave.com/"
+                  : selectedPreset.name === "slack-mcp"
+                    ? "https://api.slack.com/apps"
+                    : undefined
+          }
+          onApiKeyChange={handleApiKeyChange}
+          instructions={selectedPreset.setupInstructions}
+        />
+      )}
+
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="config">Config</Label>

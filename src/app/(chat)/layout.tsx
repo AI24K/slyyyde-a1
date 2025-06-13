@@ -12,10 +12,13 @@ import { isShortcutEvent, Shortcuts } from "@/lib/keyboard-shortcuts";
 import { VoiceChatBot } from "@/components/voice-chat-bot";
 import { authClient } from "auth/client";
 import { useLatest } from "@/hooks/use-latest";
+import { DevModeIndicator } from "@/components/dev-mode-indicator";
 
 export default function ChatLayout({
   children,
-}: { children: React.ReactNode }) {
+}: {
+  children: React.ReactNode;
+}) {
   const { data, refetch } = authClient.useSession();
   const latestSessionApi = useLatest({ data, refetch });
   const [openChatPreferences, openShortcutsPopup, appStoreMutate] = appStore(
@@ -78,6 +81,7 @@ export default function ChatLayout({
         onOpenChange={(open) => appStoreMutate({ openChatPreferences: open })}
       />
       <VoiceChatBot />
+      <DevModeIndicator />
     </SidebarProvider>
   );
 }
