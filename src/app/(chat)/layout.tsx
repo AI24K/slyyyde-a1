@@ -81,6 +81,7 @@ export default function ChatLayout({
         onOpenChange={(open) => appStoreMutate({ openChatPreferences: open })}
       />
       <VoiceChatBot />
+      <DevModeIndicator />
     </SidebarProvider>
   );
 }
