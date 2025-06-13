@@ -174,7 +174,67 @@ export default function MCPEditor({
     setJsonString(JSON.stringify(presetConfig, null, 2));
     setJsonError(null);
     setNameError(null);
+    setSelectedPresetName(presetName);
   };
+
+  const handleApiKeyChange = (apiKey: string) => {
+    if (!selectedPresetName) return;
+
+    const preset = getMCPPresetByName(selectedPresetName);
+    if (!preset || !preset.requiresApiKey) return;
+
+    // Update the config with the new API key
+    let updatedConfig = { ...config };
+
+    if (selectedPresetName === "composio") {
+      updatedConfig = {
+        ...updatedConfig,
+        env: {
+          ...updatedConfig.env,
+          COMPOSIO_API_KEY: apiKey,
+        },
+      };
+    } else if (selectedPresetName === "composio-sse") {
+      updatedConfig = {
+        ...updatedConfig,
+        headers: {
+          ...updatedConfig.headers,
+          "X-API-Key": apiKey,
+        },
+      };
+    } else if (selectedPresetName === "github-mcp") {
+      updatedConfig = {
+        ...updatedConfig,
+        env: {
+          ...updatedConfig.env,
+          GITHUB_PERSONAL_ACCESS_TOKEN: apiKey,
+        },
+      };
+    } else if (selectedPresetName === "brave-search") {
+      updatedConfig = {
+        ...updatedConfig,
+        env: {
+          ...updatedConfig.env,
+          BRAVE_API_KEY: apiKey,
+        },
+      };
+    } else if (selectedPresetName === "slack-mcp") {
+      updatedConfig = {
+        ...updatedConfig,
+        env: {
+          ...updatedConfig.env,
+          SLACK_BOT_TOKEN: apiKey,
+        },
+      };
+    }
+
+    setConfig(updatedConfig);
+    setJsonString(JSON.stringify(updatedConfig, null, 2));
+  };
+
+  const selectedPreset = selectedPresetName
+    ? getMCPPresetByName(selectedPresetName)
+    : null;
 
   return (
     <div className="flex flex-col space-y-6">
