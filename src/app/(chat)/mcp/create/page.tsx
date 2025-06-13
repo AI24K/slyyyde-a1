@@ -1,4 +1,5 @@
 import MCPEditor from "@/components/mcp-editor";
+import { ComposioIntegrationsShowcase } from "@/components/composio-integrations";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
