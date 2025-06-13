@@ -27,7 +27,9 @@ import { insertMcpClientAction } from "@/app/api/mcp/actions";
 import { Alert, AlertDescription, AlertTitle } from "ui/alert";
 import { z } from "zod";
 import { MCPPresetSelector } from "./mcp-preset-selector";
+import { ApiKeyHelper } from "./api-key-helper";
 import { Separator } from "./ui/separator";
+import { getMCPPresetByName } from "@/lib/mcp-presets";
 
 interface MCPEditorProps {
   initialConfig?: MCPServerConfig;
