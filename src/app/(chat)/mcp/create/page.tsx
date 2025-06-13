@@ -22,6 +22,7 @@ export default function Page() {
         </header>
 
         <main className="my-8">
+          <ComposioIntegrationsShowcase />
           <MCPEditor />
         </main>
       </div>
